@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MR to MD</title>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="./lib/app.js"></script>
+
+    <script>
+
+        function myfunc(){
+            let email = $("#email").val();
+            let pass = $("#pass").val();
+
+            alert(`${email} and ${pass}`);
+        }
+
+    </script>
+
+</head>
+<body>
+    
+<input type="email" id="email"/>
+<input type="password" name="pass" id="pass"/>
+<button onclick="myFunc()"> go </button>
+
+</body>
+</html>
