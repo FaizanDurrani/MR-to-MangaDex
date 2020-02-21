@@ -18,7 +18,14 @@
             app.exportMRList(email, pass).then(list => document.write(JSON.stringify(list, null, 4)));
         }
 
-        Document.referer = 'https://mangarock.com/account/login';
+        if (document.referer != 'https://mangarock.com/account/login')
+        {
+            delete window.document.referrer;
+            document.__defineGetter__('referrer', function () {
+                return 'https://mangarock.com/account/login';
+            });
+            location.reload();
+        }
     </script>
 
 </head>
