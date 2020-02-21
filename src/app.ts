@@ -2,7 +2,7 @@
 import * as utils from './Functions'; // Logging utils
 import request from 'request-promise-native'; // Request to make request to the mangarock API
 
-export default async (email: string, password: string) => {
+export const exportMRList = async (email: string, password: string) => {
     utils.log(`EMAIL: ${email} PASSWORD: ${password}`)
 
     let exportedList = {
