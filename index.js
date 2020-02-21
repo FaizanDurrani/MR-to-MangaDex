@@ -9,7 +9,7 @@ if (email.trim() === "" || password.trim() === "") {
     console.log("NEED EMAIL AND PASSWORD FOR MR; FORMAT: node . <email> <password>");
     process.exit();
 } else {
-    app.default(email, password).then(backup => {
+    app.exportMRList(email, password).then(backup => {
         fs.writeFile(`./MangaLogs/MR-Mangas.json`, JSON.stringify(backup, null, 4), null, (err) => {
             if (err) utils.error(err); // Stop file write if there is an error
     
