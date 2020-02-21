@@ -11,12 +11,8 @@ export const exportMRList = async (email: string, password: string) => {
 
     let opt1 = {
         'method': 'POST',
-        'url': 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCFJPh6357HhIID3SgeRam2Cv6n139ymig',
-        'headers': {
-            'Content-Type': 'application/json',
-            'Referer': 'https://mangarock.com/account/login'
-        },
-        body: JSON.stringify({ "email": `${email}`, "password": `${password}`, "returnSecureToken": true })
+        'url': 'https://us-central1-mangadexapi.cloudfunctions.net/mrLogin',
+        body: JSON.stringify({ "email": `${email}`, "password": `${password}`})
     };
 
     /* Sign in request */
@@ -28,7 +24,7 @@ export const exportMRList = async (email: string, password: string) => {
             'url': 'https://graphql.mangarock.io/graphql',
             'headers': {
                 'Content-Type': 'application/json',
-                'Authorization': sanatized['idToken']
+                'Authorization': sanatized['token']
             },
             body: JSON.stringify({
                 "operationName": "listUserReadingHistoryByUpdatedTimeRevised",

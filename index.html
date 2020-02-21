@@ -9,22 +9,11 @@
     <script src="./lib/app.bundled.js"></script>
 
     <script>
-        
-
         function myFunc(){
             let email = $("#email").val();
             let pass = $("#pass").val();
 
             app.exportMRList(email, pass).then(list => document.write(JSON.stringify(list, null, 4)));
-        }
-
-        if (document.referer != 'https://mangarock.com/account/login')
-        {
-            delete window.document.referrer;
-            document.__defineGetter__('referrer', function () {
-                return 'https://mangarock.com/account/login';
-            });
-            location.reload();
         }
     </script>
 
