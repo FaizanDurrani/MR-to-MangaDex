@@ -1,17 +1,23 @@
 {
-  "name": "mangarocktotachiyomi",
+  "name": "mr_to_md",
   "version": "1.0.0",
-  "description": "MangaRock to Tachiyomi",
+  "description": "MangaRock to MangaDex",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
-  "author": "Meliodas#0001",
+  "author": "Faizan Durrani",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^2.4.2",
+    "@types/node": "^12.12.19",
+    "chalk": "^3.0.0",
     "moment": "^2.24.0",
-    "request": "^2.88.0"
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.8",
+    "typescript": "^3.7.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/request-promise-native": "^1.0.17",
+    "tslint": "^5.12.0"
+  }
 }
