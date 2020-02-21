@@ -1,0 +1,17 @@
+{
+  "name": "mangarocktotachiyomi",
+  "version": "1.0.0",
+  "description": "MangaRock to Tachiyomi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Meliodas#0001",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "moment": "^2.24.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {}
+}
