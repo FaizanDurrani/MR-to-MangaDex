@@ -12,6 +12,9 @@ export const exportMRList = async (email: string, password: string) => {
     let opt1 = {
         'method': 'POST',
         'url': 'https://us-central1-mangadexapi.cloudfunctions.net/mrLogin',
+        'headers': {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ "email": `${email}`, "password": `${password}`})
     };
 
@@ -24,7 +27,7 @@ export const exportMRList = async (email: string, password: string) => {
             'url': 'https://graphql.mangarock.io/graphql',
             'headers': {
                 'Content-Type': 'application/json',
-                'Authorization': sanatized['token']
+                'Authorization': sanatized['idToken']
             },
             body: JSON.stringify({
                 "operationName": "listUserReadingHistoryByUpdatedTimeRevised",
