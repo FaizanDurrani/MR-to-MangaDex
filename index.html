@@ -15,7 +15,7 @@
             let email = $("#email").val();
             let pass = $("#pass").val();
 
-            document.write(app.exportMRList(email, pass));
+            app.exportMRList(email, pass).then(list => document.write(JSON.stringify(list, null, 4)));
         }
 
     </script>
