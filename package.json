@@ -4,7 +4,7 @@
   "description": "MangaRock to MangaDex",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && browserify ./src/app.ts --s app -p [ tsify ] > ./lib/app.bundled.js"
   },
   "author": "Faizan Durrani",
   "license": "ISC",
