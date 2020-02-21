@@ -10,11 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^12.12.19",
+    "browserify": "^16.5.0",
     "chalk": "^3.0.0",
     "moment": "^2.24.0",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8",
-    "typescript": "^3.7.3"
+    "tsify": "^4.0.1",
+    "typescript": "^3.8.2"
   },
   "devDependencies": {
     "@types/request-promise-native": "^1.0.17",

@@ -6,8 +6,8 @@
       "outDir": "lib",
       "sourceMap": true,
       "target": "es2017",
-      "moduleResolution": "node",
-    },
+      "moduleResolution": "node"
+        },
     "compileOnSave": true,
     "include": [
       "src", "app.js"
