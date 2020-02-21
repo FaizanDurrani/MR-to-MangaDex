@@ -1,5 +1,7 @@
 /node_modules
 
+/MangaLogs
+/MangaLogs/*.json
 /.idea
 
 package-lock.json
