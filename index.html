@@ -27,11 +27,13 @@
         }
         
         function exportMDList(){
-            var blob = new Blob([JSON.stringify(combinedList.map(x => { 
+            let mdList = [];
+            combinedList.forEach(x => { 
                 if (x.md == null) return;
                 
-                return {comic_id: x.md.id};
-            }), null, 4)], { type: "text/plain; encoding=utf8" });
+                return mdList.push({comic_id: x.md.id});
+            });
+            var blob = new Blob([JSON.stringify(mdList, null, 4)], { type: "text/plain; encoding=utf8" });
             saveData(blob, 'MD_EXPORT_'+ Date.now()/1000 +'.json'); 
         }
         
@@ -105,9 +107,8 @@
                 }
 
                 $('#list').append(`
-                    <div class="hstack padding-vertical border-top">
-                        <div class="hstack padding-right">
-                            <div class="spacer"></div>
+                    <div class="hstack padding-top border-top">
+                        <div class="hstack border-right">
                             <button class="btn" onclick="exportMDList()">EXPORT</button>
                         </div>
                         <div class="hstack padding-left">
@@ -340,7 +341,7 @@
         </form>
         <div id="list" class="vstack" style="display: none;">
             <div class="hstack padding-vertical">
-                <div class="hstack border-right padding-right">
+                <div class="hstack border-right">
                     <h1 class="title">Manga Rock</h1>
                     <div class="spacer"></div>
                 </div>
