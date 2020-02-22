@@ -7,22 +7,378 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="./lib/app.bundled.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:700,600,400,300' rel='stylesheet' type='text/css'/>
+    <link href='./loader.css' rel='stylesheet' type='text/css'/>
 
     <script>
-        function myFunc(){
-            let email = $("#email").val();
-            let pass = $("#pass").val();
 
-            app.exportMRList(email, pass).then(list => document.write(JSON.stringify(list, null, 4)));
+        let combinedList = [];
+        function saveData(blob, fileName) // does the same as FileSaver.js
+        {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+
+            var url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        function exportMDList(){
+            var blob = new Blob([JSON.stringify(combinedList.map(x => { 
+                if (x.md == null) return;
+                
+                return {comic_id: x.md.id};
+            }), null, 4)], { type: "text/plain; encoding=utf8" });
+            saveData(blob, 'MD_EXPORT_'+ Date.now()/1000 +'.json'); 
+        }
+        
+        function exportMRList(){
+            var blob = new Blob([JSON.stringify(combinedList.map(x => x.mr), null, 4)], { type: "text/plain; encoding=utf8" });
+            saveData(blob, 'MR_EXPORT_'+ Date.now()/1000 +'.json'); 
+        }
+
+         async function exportList(){
+            const email = $("#email").val();
+            const pass = $("#pass").val();
+            
+            $('#login *').prop("disabled", true);
+            $('.loader').fadeIn(500);
+            
+            try{
+                const list = await app.exportMRList(email, pass, true);
+                if (list === undefined || list === null) {
+                    console.log("Could not get MR List");
+                    return;
+                }
+
+                console.log(`Found ${list.mangas.length} mangas on MR`);
+                
+                $('#box')
+                .toggleClass('box-small')
+                .toggleClass('box-large');
+                $('#login').fadeOut(500, function(){
+                    $('#list').fadeIn();
+                });
+                
+                combinedList = (await app.mrListToMD(list)).results;
+
+                $('.loader').fadeOut(500);
+
+                for (let i = 0; i < combinedList.length; i++){
+                    const manga = combinedList[i];
+                    console.log(manga);
+                    if (manga.md == null) {
+                       $('#list').append(`
+                        <div class="hstack padding-vertical border-top">
+                            <div class="hstack border-right">
+                                <img class="thumbnail align-start" src="${manga.mr.thumbnail}" />
+                                <div class="vstack padding-horizontal">
+                                    <h3 class="title">${manga.mr.name}</h3>
+                                    <p>${manga.mr.description.trim()}</p>
+                                </div>
+                            </div>
+                            <div class="spacer padding-left"></div>
+                        </div>`);
+                    } else {
+                        $('#list').append(`
+                        <div class="hstack padding-vertical border-top">
+                            <div class="hstack border-right">
+                                <img class="thumbnail align-start" src="${manga.mr.thumbnail}" />
+                                <div class="vstack padding-horizontal">
+                                    <h3 class="title">${manga.mr.name}</h3>
+                                    <p>${manga.mr.description.trim()}</p>
+                                </div>
+                            </div>
+
+                            <div class="hstack padding-left">
+                                <img class="thumbnail align-start" src="https://mangadex.org/images/manga/${manga.md.id}.large.jpg?1537907572" />
+                                <div class="vstack padding-horizontal">
+                                    <h3 class="title">${manga.md.titles[0]}</h3>
+                                    <p>${manga.md.description.trim()}</p>
+                                </div>
+                            </div>
+                        </div>`);
+                    }
+                }
+
+                $('#list').append(`
+                    <div class="hstack padding-vertical border-top">
+                        <div class="hstack border-right padding-right">
+                            <div class="spacer"></div>
+                            <button class="btn" onclick="exportMDList()">EXPORT</button>
+                        </div>
+                        <div class="hstack padding-left">
+                            <div class="spacer"></div>
+                            <button class="btn" onclick="exportMDList()">EXPORT</button>
+                        </div>
+                    </div>
+                `);
+            } catch (e) {
+                $('#box')
+                .addClass('box-small')
+                .removeClass('box-large');
+
+                $('#login *').prop("disabled", false);
+                $('.loader').fadeOut(500);
+                $('#list').fadeOut(500, function(){
+                    $('#login').fadeIn();
+                });
+
+                console.error(e);
+            }
         }
     </script>
+    <style>
+        body{
+            font-family: 'Open Sans', sans-serif;
+            background:#3498db;
+            margin: 0 auto 0 auto;  
+            width:100%; 
+            text-align:center;
+            margin: 50px 0px 50px 0px;   
+        }
 
+        p{
+            font-size:18px;
+            text-decoration: none;
+            margin: 0;
+            text-align: justify;
+            white-space: pre-line;
+        }
+
+        h1{
+            font-size:1.5em;
+            color:#525252;
+            margin: 0;
+        }
+
+        .box {
+            background: white;
+            border-radius: 6px;
+            margin: 0 auto 0 auto;
+            border: #2980b9 4px solid;
+            display: inline-block;
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .box-small {
+            width: 500px;
+        }
+
+        .box-large {
+            width: 80%;
+        }
+
+        .input{
+            background:#ecf0f1;
+            border: #ccc 1px solid;
+            border-bottom: #ccc 2px solid;
+            padding: 8px;
+            width:100%;
+            color:#AAAAAA;
+            margin-top:10px;
+            font-size:1em;
+            border-radius:4px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background: #2ecc71;
+            width: 125px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            color: white;
+            border-radius: 2px;
+            border: #27ae60 1px solid;
+            font-weight: 800;
+            font-size: 0.8em;
+            display: block;
+            text-decoration: none;
+        }
+
+        .btn:hover{
+            background:#2CC06B; 
+        }
+
+        .hstack {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            /* align-items: flex-start; */
+        }
+
+        .vstack {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            /* align-items: flex-start; */
+        }
+
+        .align-start {
+            align-self: flex-start;
+        }
+
+        .align-center {
+            align-self: center;
+        }
+
+        .align-end {
+            align-self: flex-end;
+        }
+
+        .thumbnail {
+            min-width: 125px;
+            width: 125px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .padding-vertical, .padding-all {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .padding-horizontal, .padding-all {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .padding-left {
+            padding-left: 10px;
+        }
+
+        .padding-right {
+            padding-right: 10px;
+        }
+
+        .padding-top {
+            padding-top: 10px;
+        }
+
+        .padding-bottom {
+            padding-bottom: 10px;
+        }
+
+        .margin-left, .margin-all {
+            margin-left: 10px;
+        }
+
+        .margin-right, .margin-all {
+            margin-right: 10px;
+        }
+
+        .margin-top, .margin-all {
+            margin-top: 10px;
+        }
+
+        .margin-bottom, .margin-all{
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-weight: 600;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            font-size: 22px;
+            text-align: start;
+        }
+        
+        .spacer {
+            flex: 1;
+        }
+
+        .border-left, .border-all {
+            border-left: 1px solid #525252;
+        }
+
+        .border-right, .border-all {
+            border-right: 1px solid #525252;
+        }
+
+        .border-top, .border-all {
+            border-top: 1px solid #525252;
+        }
+
+        .border-bottom, .border-all {
+            border-bottom: 1px solid #525252;
+        }
+
+        .info-box {
+            background: #d4edda;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            color: dodgerblue;
+        }
+
+        .info-box p {
+            font-size: 15px;
+        }
+    </style>
 </head>
 <body>
-    
-<input type="email" id="email"/>
-<input type="password" name="pass" id="pass"/>
-<button onclick="myFunc()"> go </button>
+    <svg class="loader" style="display: none;">
+        <line x1="0" y1="1" x2="100%" y2="1" class="path"/>
+    </svg>
+    <div class="box box-small padding-all" id="box">
+        <form id="login" action="#" method="POST" onsubmit="this.preventDefault()">
+            <h1>Manga Rock</h1>
+            <input type="email" name="email" placeholder="Email" class="input" id="email"/>
+            <input type="password" name="password" placeholder="Password" class="input" id="pass"/>
+            
+            <div class="hstack padding-top">
+                <a href="https://www.patreon.com/bePatron?u=30023884" target="__blank" class="hstack"><img src="./become_a_patron_button@2x.png" width="150" alt="BECOME A PATRON!"/></a>
+                <div class="spacer"></div>
+                <button onclick="exportList()" class="btn">Login</button>
+            </div>
+        </form>
+        <div id="list" class="vstack" style="display: none;">
+            <div class="hstack padding-vertical">
+                <div class="hstack border-right padding-right">
+                    <h1 class="title">Manga Rock</h1>
+                    <div class="spacer"></div>
+                </div>
+                <div class="hstack padding-left">
+                    <div class="hstack">
+                        <h1 class="title">MangaDex</h1>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="hstack padding-all info-box margin-top">
+            <p>If you like the tool consider supporting me on </p>
+        </div> -->
+        <a href="https://discord.gg/Ny83JV3" class="hstack padding-all info-box margin-top">
+            Alternative to Manga Rock for iOS  
+        </a>
+    </div>
 
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-analytics.js"></script>
+
+    <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyAD9AOBoXRsEF9-nYH1c5PftVKtapCHkxE",
+        authDomain: "mangadexapi.firebaseapp.com",
+        databaseURL: "https://mangadexapi.firebaseio.com",
+        projectId: "mangadexapi",
+        storageBucket: "mangadexapi.appspot.com",
+        messagingSenderId: "166446379397",
+        appId: "1:166446379397:web:51947ec76c264115a054ec",
+        measurementId: "G-NG39J3RM65"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    </script>
 </body>
 </html>

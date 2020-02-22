@@ -1,22 +1,51 @@
 
 import * as utils from './Functions'; // Logging utils
 import request from 'request-promise-native'; // Request to make request to the mangarock API
+export const mrListToMD = async (list: any) => {
 
-export const exportMRList = async (email: string, password: string) => {
+    let opt1 = {
+        'method': 'POST',
+        'url': 'https://us-central1-mangadexapi.cloudfunctions.net/bulkSearch',
+        'headers': {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(list.mangas)
+    };
+
+    return request(opt1).then(response => {
+        let sanatized = JSON.parse(response);
+        return sanatized;
+    });
+};
+export const exportMRList = async (email: string, password: string, proxy: boolean = false) => {
     utils.log(`EMAIL: ${email} PASSWORD: ${password}`)
 
     let exportedList = {
         "mangas": []
     };
 
-    let opt1 = {
-        'method': 'POST',
-        'url': 'https://us-central1-mangadexapi.cloudfunctions.net/mrLogin',
-        'headers': {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ "email": `${email}`, "password": `${password}`})
-    };
+    let opt1 = Object.create({});
+    if (proxy){
+        opt1 = {
+            'method': 'POST',
+            'url': 'https://us-central1-mangadexapi.cloudfunctions.net/mrLogin',
+            'headers': {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "email": `${email}`, "password": `${password}`})
+        };
+    }
+    else {
+        opt1 = {
+            'method': 'POST',
+            'url': 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCFJPh6357HhIID3SgeRam2Cv6n139ymig',
+            'headers': {
+                'Content-Type': 'application/json',
+                'Referer': 'https://mangarock.com/account/login'
+            },
+            body: JSON.stringify({ "email": `${email}`, "password": `${password}`, "returnSecureToken": true })
+        };
+    }
 
     /* Sign in request */
     return request(opt1).then(response => {
@@ -99,6 +128,7 @@ export const exportMRList = async (email: string, password: string) => {
                         exportedList.mangas.push({ // Push a completed manga object to the tachiObj
                             name: basicInfo['name'],
                             thumbnail: basicInfo['thumbnail'],
+                            description: basicInfo['description'],
                             lastReadChapter: lastRead,
                             alias: basicInfo['alias']
                         })

@@ -2,6 +2,7 @@
 
 /MangaLogs
 /MangaLogs/*.json
+/_site
 /.idea
 
 package-lock.json
