@@ -53,10 +53,11 @@ export const exportMRList = async (email: string, password: string, proxy: boole
 
         let opt2 = {
             'method': 'POST',
-            'url': 'https://graphql.mangarock.io/graphql',
+            'url': 'https://cors-anywhere.herokuapp.com/https://graphql.mangarock.io/graphql',
             'headers': {
                 'Content-Type': 'application/json',
-                'Authorization': sanatized['token']
+                'Authorization': sanatized['token'],
+                'Origin': null
             },
             body: JSON.stringify({
                 "operationName": "listUserReadingHistoryByUpdatedTimeRevised",
@@ -95,9 +96,10 @@ export const exportMRList = async (email: string, password: string, proxy: boole
 
             let opt3 = {
                 'method': 'POST',
-                'url': 'https://api.mangarockhd.com/query/web401/manga_detail',
+                'url': 'https://cors-anywhere.herokuapp.com/https://api.mangarockhd.com/query/web401/manga_detail',
                 'headers': {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Origin': null
                 },
                 body: JSON.stringify(detailObj)
             };
