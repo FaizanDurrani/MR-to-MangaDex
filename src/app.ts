@@ -27,7 +27,7 @@ export const exportMRList = async (email: string, password: string) => {
             'url': 'https://graphql.mangarock.io/graphql',
             'headers': {
                 'Content-Type': 'application/json',
-                'Authorization': sanatized['idToken']
+                'Authorization': sanatized['token']
             },
             body: JSON.stringify({
                 "operationName": "listUserReadingHistoryByUpdatedTimeRevised",
