@@ -33,7 +33,7 @@
                 
                 return mdList.push({comic_id: `${x.md.id}`});
             });
-            var blob = new Blob([JSON.stringify(mdList, null, 4)], { type: "text/plain; encoding=utf8" });
+            var blob = new Blob([JSON.stringify(mdList)], { type: "text/plain; encoding=utf8" });
             saveData(blob, 'MD_EXPORT_'+ Date.now()/1000 +'.json'); 
         }
         
