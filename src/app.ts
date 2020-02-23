@@ -60,20 +60,16 @@ export const exportMRList = async (email: string, password: string, proxy: boole
                 'Origin': null
             },
             body: JSON.stringify({
-                "operationName": "listUserReadingHistoryByUpdatedTimeRevised",
-                "variables": {
-                    "limit": 100000,
-                    "updatedAt": "1970-01-01T00:00:00.000Z",
-                    "nextToken": ""
-                },
-                "query": "query listUserReadingHistoryByUpdatedTimeRevised($updatedAt: AWSDateTime, $limit: Int, $nextToken: String) {\n  listUserReadingHistoryByUpdatedTimeRevised(updatedAt: $updatedAt, nextToken: $nextToken, limit: $limit) {\n    items {\n      oid\n      updatedAt\n      lastRead\n      lastReadPage\n      lastReadChapterOID\n      showInRecent\n      __typename\n    }\n    nextToken\n    __typename\n  }\n}\n"
-            })
+                "operationName": "favorites",
+                "variables": {},
+                "query": "query favorites($updatedAt: AWSDateTime, $nextToken: String) {\n  favorites: listFavoritesByUpdatedTimeWithPaging(updatedAt: $updatedAt, nextToken: $nextToken) {\n    items {\n      oid\n        __typename\n    }\n    __typename\n  }\n}\n"
+              })
         };
 
         /* Get users manga request */
         return request(opt2).then(res => {
 
-            let userManga = JSON.parse(res).data['listUserReadingHistoryByUpdatedTimeRevised'].items; // Filters the result body to just the list of manga
+            let userManga = JSON.parse(res).data.favorites.items; // Filters the result body to just the list of manga
             
 
             let idObj = {}; // Object for request OIDs
@@ -85,11 +81,7 @@ export const exportMRList = async (email: string, password: string, proxy: boole
 
                 let oidObject = {}; // Object for mangalist OIDs
 
-                oidObject['oid'] = entry['oid']; // Sets oidObject oid to the current manga OID
-                oidObject['lastReadPage'] = '0'; // Placeholder 0 for lastReadChapterOID
-                if (entry['lastReadPage'] !== null) // If the current manga has a lastReadChapterOID then set the oidObject lastReadChapterOID to that
-                    oidObject['lastReadPage'] = entry['lastReadPage'];
-
+                oidObject['oid'] = entry['oid'];
                 mangaList.push(oidObject); // Push oidObject into the mangaList for later
             });
             let detailObj = { "oids": idObj, "sections": ["basic_info"] }; // Creates an Object with the info the next request needs
@@ -119,19 +111,13 @@ export const exportMRList = async (email: string, password: string, proxy: boole
 
                     let currOID = info['default']['oid']; // Sets the current manga OID
 
-                    let lastRead = 0; // Sets last read
-
                     mangaList.forEach(manga => {
                         if (manga['oid'] !== currOID) return; // If the current info manga OID does not equal the current manga list OID, skip this loop iteration
-
-                        if (manga['lastReadPage']) // If the manga object contains "lastReadChapterOID", set lastRead to that
-                            lastRead = manga['lastReadPage'];
 
                         exportedList.mangas.push({ // Push a completed manga object to the tachiObj
                             name: basicInfo['name'],
                             thumbnail: basicInfo['thumbnail'],
                             description: basicInfo['description'],
-                            lastReadChapter: lastRead,
                             alias: basicInfo['alias']
                         })
                     })
