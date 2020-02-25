@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,8 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="./lib/app.bundled.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:700,600,400,300' rel='stylesheet' type='text/css'/>
-    <link href='./loader.css' rel='stylesheet' type='text/css'/>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:700,600,400,300' rel='stylesheet' type='text/css' />
+    <link href='./loader.css' rel='stylesheet' type='text/css' />
 
     <script>
 
@@ -25,31 +26,31 @@
             a.click();
             window.URL.revokeObjectURL(url);
         }
-        
-        function exportMDList(){
+
+        function exportMDList() {
             let mdList = [];
-            combinedList.forEach(x => { 
+            combinedList.forEach(x => {
                 if (x.md == null) return;
-                
-                return mdList.push({comic_id: `${x.md.id}`});
+
+                return mdList.push({ comic_id: `${x.md.id}` });
             });
             var blob = new Blob([JSON.stringify(mdList)], { type: "text/plain; encoding=utf8" });
-            saveData(blob, 'MD_EXPORT_'+ Date.now()/1000 +'.json'); 
-        }
-        
-        function exportMRList(){
-            var blob = new Blob([JSON.stringify(combinedList.map(x => x.mr), null, 4)], { type: "text/plain; encoding=utf8" });
-            saveData(blob, 'MR_EXPORT_'+ Date.now()/1000 +'.json'); 
+            saveData(blob, 'MD_EXPORT_' + Date.now() / 1000 + '.json');
         }
 
-         async function exportList(){
+        function exportMRList() {
+            var blob = new Blob([JSON.stringify(combinedList.map(x => x.mr), null, 4)], { type: "text/plain; encoding=utf8" });
+            saveData(blob, 'MR_EXPORT_' + Date.now() / 1000 + '.json');
+        }
+
+        async function exportList() {
             const email = $("#email").val();
             const pass = $("#pass").val();
-            
+
             $('#login *').prop("disabled", true);
             $('.loader').fadeIn(500);
-            
-            try{
+
+            try {
                 const list = await app.exportMRList(email, pass, true);
                 if (list === undefined || list === null) {
                     console.log("Could not get MR List");
@@ -58,23 +59,23 @@
 
                 console.log(`Found ${list.mangas.length} mangas on MR`);
                 console.log(JSON.stringify(list.mangas));
-                
+
                 $('#box')
-                .toggleClass('box-small')
-                .toggleClass('box-large');
-                $('#login').fadeOut(500, function(){
+                    .toggleClass('box-small')
+                    .toggleClass('box-large');
+                $('#login').fadeOut(500, function () {
                     $('#list').fadeIn();
                 });
-                
+
                 combinedList = (await app.mrListToMD(list)).results;
 
                 $('.loader').fadeOut(500);
 
-                for (let i = 0; i < combinedList.length; i++){
+                for (let i = 0; i < combinedList.length; i++) {
                     const manga = combinedList[i];
                     console.log(manga);
                     if (manga.md == null) {
-                       $('#list').append(`
+                        $('#list').append(`
                         <div class="hstack padding-vertical border-top">
                             <div class="hstack border-right">
                                 <img class="thumbnail align-start" src="${manga.mr.thumbnail}" />
@@ -110,7 +111,7 @@
                 $('#list').append(`
                     <div class="hstack padding-top border-top">
                         <div class="hstack border-right">
-                            <button class="btn" onclick="exportMDList()">EXPORT</button>
+                            <button class="btn" onclick="exportMRList()">EXPORT</button>
                         </div>
                         <div class="hstack padding-left">
                             <div class="spacer"></div>
@@ -120,12 +121,12 @@
                 `);
             } catch (e) {
                 $('#box')
-                .addClass('box-small')
-                .removeClass('box-large');
+                    .addClass('box-small')
+                    .removeClass('box-large');
 
                 $('#login *').prop("disabled", false);
                 $('.loader').fadeOut(500);
-                $('#list').fadeOut(500, function(){
+                $('#list').fadeOut(500, function () {
                     $('#login').fadeIn();
                 });
 
@@ -134,26 +135,26 @@
         }
     </script>
     <style>
-        body{
+        body {
             font-family: 'Open Sans', sans-serif;
-            background:#3498db;
-            margin: 0 auto 0 auto;  
-            width:100%; 
-            text-align:center;
-            margin: 50px 0px 50px 0px;   
+            background: #3498db;
+            margin: 0 auto 0 auto;
+            width: 100%;
+            text-align: center;
+            margin: 50px 0px 50px 0px;
         }
 
-        p{
-            font-size:18px;
+        p {
+            font-size: 18px;
             text-decoration: none;
             margin: 0;
             text-align: justify;
             white-space: pre-line;
         }
 
-        h1{
-            font-size:1.5em;
-            color:#525252;
+        h1 {
+            font-size: 1.5em;
+            color: #525252;
             margin: 0;
         }
 
@@ -174,16 +175,16 @@
             width: 80%;
         }
 
-        .input{
-            background:#ecf0f1;
+        .input {
+            background: #ecf0f1;
             border: #ccc 1px solid;
             border-bottom: #ccc 2px solid;
             padding: 8px;
-            width:100%;
-            color:#AAAAAA;
-            margin-top:10px;
-            font-size:1em;
-            border-radius:4px;
+            width: 100%;
+            color: #AAAAAA;
+            margin-top: 10px;
+            font-size: 1em;
+            border-radius: 4px;
             box-sizing: border-box;
         }
 
@@ -201,8 +202,8 @@
             text-decoration: none;
         }
 
-        .btn:hover{
-            background:#2CC06B; 
+        .btn:hover {
+            background: #2CC06B;
         }
 
         .hstack {
@@ -238,12 +239,14 @@
             border-radius: 5px;
         }
 
-        .padding-vertical, .padding-all {
+        .padding-vertical,
+        .padding-all {
             padding-top: 10px;
             padding-bottom: 10px;
         }
 
-        .padding-horizontal, .padding-all {
+        .padding-horizontal,
+        .padding-all {
             padding-left: 10px;
             padding-right: 10px;
         }
@@ -264,19 +267,23 @@
             padding-bottom: 10px;
         }
 
-        .margin-left, .margin-all {
+        .margin-left,
+        .margin-all {
             margin-left: 10px;
         }
 
-        .margin-right, .margin-all {
+        .margin-right,
+        .margin-all {
             margin-right: 10px;
         }
 
-        .margin-top, .margin-all {
+        .margin-top,
+        .margin-all {
             margin-top: 10px;
         }
 
-        .margin-bottom, .margin-all{
+        .margin-bottom,
+        .margin-all {
             margin-bottom: 10px;
         }
 
@@ -287,24 +294,28 @@
             font-size: 22px;
             text-align: start;
         }
-        
+
         .spacer {
             flex: 1;
         }
 
-        .border-left, .border-all {
+        .border-left,
+        .border-all {
             border-left: 1px solid #525252;
         }
 
-        .border-right, .border-all {
+        .border-right,
+        .border-all {
             border-right: 1px solid #525252;
         }
 
-        .border-top, .border-all {
+        .border-top,
+        .border-all {
             border-top: 1px solid #525252;
         }
 
-        .border-bottom, .border-all {
+        .border-bottom,
+        .border-all {
             border-bottom: 1px solid #525252;
         }
 
@@ -324,16 +335,17 @@
         }
     </style>
 </head>
+
 <body>
     <svg class="loader" style="display: none;">
-        <line x1="0" y1="1" x2="100%" y2="1" class="path"/>
+        <line x1="0" y1="1" x2="100%" y2="1" class="path" />
     </svg>
     <div class="box box-small padding-all" id="box">
         <form id="login" action="#" method="POST" onsubmit="this.preventDefault()">
             <h1>Manga Rock</h1>
-            <input type="email" name="email" placeholder="Email" class="input" id="email"/>
-            <input type="password" name="password" placeholder="Password" class="input" id="pass"/>
-            
+            <input type="email" name="email" placeholder="Email" class="input" id="email" />
+            <input type="password" name="password" placeholder="Password" class="input" id="pass" />
+
             <div class="hstack padding-top">
                 <!-- <a href="https://www.patreon.com/bePatron?u=30023884" target="__blank" class="hstack"><img src="./become_a_patron_button@2x.png" width="150" alt="BECOME A PATRON!"/></a> -->
                 <div class="spacer"></div>
@@ -360,7 +372,9 @@
                     Alternative to Manga Rock for iOS
                 </a>
             </div>
-            <a href="https://www.patreon.com/bePatron?u=30023884" target="__blank" class="align-end" style="display: flex;"><img src="./become_a_patron_button@2x.png" width="150" alt="BECOME A PATRON!"/></a>
+            <a href="https://www.patreon.com/bePatron?u=30023884" target="__blank" class="align-end"
+                style="display: flex;"><img src="./become_a_patron_button@2x.png" width="150"
+                    alt="BECOME A PATRON!" /></a>
         </div>
     </div>
 
@@ -373,20 +387,21 @@
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-analytics.js"></script>
 
     <script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-        apiKey: "AIzaSyAD9AOBoXRsEF9-nYH1c5PftVKtapCHkxE",
-        authDomain: "mangadexapi.firebaseapp.com",
-        databaseURL: "https://mangadexapi.firebaseio.com",
-        projectId: "mangadexapi",
-        storageBucket: "mangadexapi.appspot.com",
-        messagingSenderId: "166446379397",
-        appId: "1:166446379397:web:51947ec76c264115a054ec",
-        measurementId: "G-NG39J3RM65"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAD9AOBoXRsEF9-nYH1c5PftVKtapCHkxE",
+            authDomain: "mangadexapi.firebaseapp.com",
+            databaseURL: "https://mangadexapi.firebaseio.com",
+            projectId: "mangadexapi",
+            storageBucket: "mangadexapi.appspot.com",
+            messagingSenderId: "166446379397",
+            appId: "1:166446379397:web:51947ec76c264115a054ec",
+            measurementId: "G-NG39J3RM65"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
     </script>
 </body>
+
 </html>
