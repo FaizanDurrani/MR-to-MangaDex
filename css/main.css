@@ -1,0 +1,16 @@
+.manga-image {
+    width: 150px;
+    height: 225px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.manga-desc {
+    height: 225px;
+    overflow: auto
+}
+
+.small-bottom-margin {
+    margin-bottom: 10px
+}
