@@ -73,7 +73,7 @@
                 }
 
                 console.log(`Found ${list.mangas.length} mangas on MR`);
-                console.log(JSON.stringify(list.mangas));
+                //console.log(JSON.stringify(list.mangas));
 
                 $('#box')
                     .toggleClass('box-small')
@@ -83,8 +83,9 @@
                 });
 
                 const chunkedFavorites = chunkArray(list.mangas, 1000);
+                console.log(chunkedFavorites);
                 for (let chunkIndex = 0; chunkIndex < chunkedFavorites.length; chunkIndex++){
-                    combinedList.push((await app.mrListToMD(chunkedFavorites[chunkIndex])).results);
+                    combinedList.push(...((await app.mrListToMD(chunkedFavorites[chunkIndex])).results));
                 }
 
                 $('.loader').fadeOut(500);
