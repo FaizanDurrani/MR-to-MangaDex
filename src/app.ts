@@ -1,15 +1,15 @@
 
 import * as utils from './Functions'; // Logging utils
 import request from 'request-promise-native'; // Request to make request to the mangarock API
-export const mrListToMD = async (list: any) => {
 
+export const mrListToMD = async (list: any[]) => {
     let opt1 = {
         'method': 'POST',
         'url': 'https://us-central1-mangadexapi.cloudfunctions.net/bulkSearch',
         'headers': {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(list.mangas)
+        body: JSON.stringify(list)
     };
 
     return request(opt1).then(response => {
@@ -17,6 +17,7 @@ export const mrListToMD = async (list: any) => {
         return sanatized;
     });
 };
+
 export const exportMRList = async (email: string, password: string, proxy: boolean = false) => {
     utils.log(`EMAIL: ${email} PASSWORD: ${password}`)
 

@@ -12,6 +12,21 @@
     <link href='./loader.css' rel='stylesheet' type='text/css' />
 
     <script>
+        /**
+         * Returns an array with arrays of the given size.
+         *
+         * @param myArray {Array} Array to split
+         * @param chunkSize {Integer} Size of every group
+         */
+        function chunkArray(myArray, chunk_size){
+            var results = [];
+            
+            while (myArray.length) {
+                results.push(myArray.splice(0, chunk_size));
+            }
+            
+            return results;
+        }
 
         let combinedList = [];
         function saveData(blob, fileName) // does the same as FileSaver.js
@@ -67,7 +82,10 @@
                     $('#list').fadeIn();
                 });
 
-                combinedList = (await app.mrListToMD(list)).results;
+                const chunkedFavorites = chunkArray(list.mangas, 1000);
+                for (let chunkIndex = 0; chunkIndex < chunkedFavorites.length; chunkIndex++){
+                    combinedList.push((await app.mrListToMD(chunkedFavorites[chunkIndex])).results);
+                }
 
                 $('.loader').fadeOut(500);
 
