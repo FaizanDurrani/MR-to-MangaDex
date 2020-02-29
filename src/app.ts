@@ -26,14 +26,14 @@ export const exportMRList = async (email: string, password: string, proxy: boole
     };
 
     let opt1 = Object.create({});
-    if (proxy){
+    if (proxy) {
         opt1 = {
             'method': 'POST',
             'url': 'https://us-central1-mangadexapi.cloudfunctions.net/mrLogin',
             'headers': {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "email": `${email}`, "password": `${password}`})
+            body: JSON.stringify({ "email": `${email}`, "password": `${password}` })
         };
     }
     else {
@@ -64,20 +64,20 @@ export const exportMRList = async (email: string, password: string, proxy: boole
                 "operationName": "favorites",
                 "variables": {},
                 "query": "query favorites($updatedAt: AWSDateTime, $nextToken: String) {\n  favorites: listFavoritesByUpdatedTimeWithPaging(limit: 100000, updatedAt: $updatedAt, nextToken: $nextToken) {\n    items {\n      oid\n        __typename\n    }\n    __typename\n  }\n}\n"
-              })
+            })
         };
 
         /* Get users manga request */
         return request(opt2).then(res => {
 
             let userManga = JSON.parse(res).data.favorites.items; // Filters the result body to just the list of manga
-            
+
 
             let idObj = {}; // Object for request OIDs
 
             let mangaList = []; // Array for user manga
 
-            userManga.forEach( entry => {
+            userManga.forEach(entry => {
                 idObj[entry['oid']] = 0; // Adds new OID with value of 0 for the request
 
                 let oidObject = {}; // Object for mangalist OIDs
@@ -102,7 +102,7 @@ export const exportMRList = async (email: string, password: string, proxy: boole
 
                 //console.log(res.body);
                 let mangaInfo = Object.values(JSON.parse(res).data); // Parse request to JSON and only save the data
-                
+
                 mangaInfo.forEach(entry => {
                     let info = entry; // Sets info to the second item in the entry array
 
@@ -119,7 +119,7 @@ export const exportMRList = async (email: string, password: string, proxy: boole
                             name: basicInfo['name'],
                             thumbnail: basicInfo['thumbnail'],
                             description: basicInfo['description'],
-                            alias: basicInfo['alias']
+                            alias: basicInfo['alias'] ?? []
                         })
                     })
                 });
