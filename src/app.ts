@@ -89,7 +89,7 @@ export const exportMRList = async (email: string, password: string, proxy: boole
 
             let opt3 = {
                 'method': 'POST',
-                'url': 'https://cors-anywhere.herokuapp.com/https://api.mangarockhd.com/query/web401/manga_detail',
+                'url': 'https://cors-anywhere.herokuapp.com/https://web.mangarockhd.com/query/web450/manga_detail',
                 'headers': {
                     'Content-Type': 'application/json',
                     'Origin': null
